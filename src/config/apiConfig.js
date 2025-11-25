@@ -4,10 +4,10 @@
 
 const API_BASE_URL = process.env.REACT_APP_API_URL
   ? `${process.env.REACT_APP_API_URL}/API`
-  : 'http://localhost:5228/API';
+  : 'https://mkalpin-backend-api.onrender.com/API';
 
 const API_STATIC_URL = process.env.REACT_APP_API_URL
   ? process.env.REACT_APP_API_URL
-  : 'http://localhost:5228';
+  : 'https://mkalpin-backend-api.onrender.com';
 
 export { API_BASE_URL, API_STATIC_URL }
