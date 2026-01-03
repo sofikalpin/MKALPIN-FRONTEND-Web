@@ -64,8 +64,10 @@ const EditPropertyForm = ({ property, onSave, onClose }) => {
 
   useEffect(() => {
     if (property) {
-      const rawEstadiaMinima = property.estadiaMinima;
-      const initialEstadiaMinima = String(rawEstadiaMinima ?? '');
+      const rawEstadiaMinima = property.estadiaMinima ?? property.minStay ?? '';
+      const initialEstadiaMinima = rawEstadiaMinima === '' || rawEstadiaMinima === null || rawEstadiaMinima === undefined
+        ? ''
+        : String(rawEstadiaMinima);
 
       setFormData({
         titulo: property.title || property.titulo || '',
@@ -410,8 +412,8 @@ const EditPropertyForm = ({ property, onSave, onClose }) => {
         </div>
 
         <div className="mb-6 p-4 border rounded-lg bg-gray-50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Horarios</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Horarios y Estadía</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs text-gray-600 mb-1" htmlFor="horarioCheckIn">Horario Check-In</label>
               <input type="time" name="horarioCheckIn" id="horarioCheckIn" value={formData.horarioCheckIn} onChange={handleInputChange} className="shadow border rounded-lg w-full py-2 px-3 text-gray-700" />
