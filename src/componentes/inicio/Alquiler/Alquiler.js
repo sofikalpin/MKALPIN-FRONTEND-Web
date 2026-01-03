@@ -10,7 +10,7 @@ import { API_BASE_URL } from '../../../config/apiConfig';
 const Alquiler = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [propiedades, setPropiedades] = useState([]);
   const [propiedadesFiltradas, setPropiedadesFiltradas] = useState([]);
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
@@ -20,9 +20,9 @@ const Alquiler = () => {
     precioMax: '',
     habitaciones: '',
     banos: '',
-    tipo: location.state?.tipoPropiedad || '', 
+    tipo: location.state?.tipoPropiedad || '',
     barrio: location.state?.barrio || '',
-    transaccionTipo: 'Alquiler', 
+    transaccionTipo: 'Alquiler',
   });
 
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
@@ -38,7 +38,7 @@ const Alquiler = () => {
     setError(null);
     let queryString = new URLSearchParams();
 
-    queryString.append('transaccionTipo', 'Alquiler'); 
+    queryString.append('transaccionTipo', 'Alquiler');
 
     const barrio = criterios.barrio || filtros.barrio;
     const precioMin = criterios.precioMin || filtros.precioMin;
@@ -59,40 +59,42 @@ const Alquiler = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      
+
       if (data.status) {
-        const propiedadesMapeadas = data.value.map(prop => ({
-          idPropiedad: prop._id, 
-          titulo: prop.titulo,
-          descripcion: prop.descripcion,
-          direccion: prop.direccion,
-          barrio: prop.barrio,
-          localidad: prop.localidad,
-          provincia: prop.provincia,
-          ubicacion: prop.ubicacion,
-          tipoPropiedad: prop.tipoPropiedad,
-          tipo: prop.tipoPropiedad,
-          transaccionTipo: prop.transaccionTipo,
-          precio: prop.precio,
-          habitaciones: prop.habitaciones,
-          banos: prop.banos,
-          superficieM2: prop.superficieM2, 
-          superficie: prop.superficieM2, 
-          estado: prop.estado,
-          latitud: prop.latitud,
-          longitud: prop.longitud,
-          coordenadas: {
-            lat: prop.latitud || -34.603,
-            lng: prop.longitud || -58.381
-          },
-          favorito: prop.favorito || false,
-          imagenes: prop.imagenes || [],
-          fechaCreacion: prop.fechaCreacion,
-          esAlquilerTemporario: prop.esAlquilerTemporario,
-          precioPorNoche: prop.precioPorNoche,
-          capacidadPersonas: prop.capacidadPersonas,
-          servicios: prop.servicios || [],
-        }));
+        const propiedadesMapeadas = data.value
+          .filter(prop => !prop.esAlquilerTemporario)
+          .map(prop => ({
+            idPropiedad: prop._id,
+            titulo: prop.titulo,
+            descripcion: prop.descripcion,
+            direccion: prop.direccion,
+            barrio: prop.barrio,
+            localidad: prop.localidad,
+            provincia: prop.provincia,
+            ubicacion: prop.ubicacion,
+            tipoPropiedad: prop.tipoPropiedad,
+            tipo: prop.tipoPropiedad,
+            transaccionTipo: prop.transaccionTipo,
+            precio: prop.precio,
+            habitaciones: prop.habitaciones,
+            banos: prop.banos,
+            superficieM2: prop.superficieM2,
+            superficie: prop.superficieM2,
+            estado: prop.estado,
+            latitud: prop.latitud,
+            longitud: prop.longitud,
+            coordenadas: {
+              lat: prop.latitud || -34.603,
+              lng: prop.longitud || -58.381
+            },
+            favorito: prop.favorito || false,
+            imagenes: prop.imagenes || [],
+            fechaCreacion: prop.fechaCreacion,
+            esAlquilerTemporario: prop.esAlquilerTemporario,
+            precioPorNoche: prop.precioPorNoche,
+            capacidadPersonas: prop.capacidadPersonas,
+            servicios: prop.servicios || [],
+          }));
         setPropiedades(propiedadesMapeadas);
         setPropiedadesFiltradas(propiedadesMapeadas);
       } else {
@@ -109,23 +111,23 @@ const Alquiler = () => {
       setLoading(false);
     }
 
-  }, [filtros.barrio, filtros.precioMin, filtros.precioMax, filtros.habitaciones, filtros.tipo]); 
+  }, [filtros.barrio, filtros.precioMin, filtros.precioMax, filtros.habitaciones, filtros.tipo]);
 
   useEffect(() => {
     if (location.state) {
-     const { tipoPropiedad, barrio } = location.state;
-     const newFiltros = {
-       ...filtros,
-       tipo: tipoPropiedad || '',
-       barrio: barrio || '',
-       transaccionTipo: 'Alquiler' 
-     };
-     setFiltros(newFiltros);
-     fetchPropiedades(newFiltros); 
-   } else {
-     fetchPropiedades(filtros); 
-   }
-  }, [location.state]); 
+      const { tipoPropiedad, barrio } = location.state;
+      const newFiltros = {
+        ...filtros,
+        tipo: tipoPropiedad || '',
+        barrio: barrio || '',
+        transaccionTipo: 'Alquiler'
+      };
+      setFiltros(newFiltros);
+      fetchPropiedades(newFiltros);
+    } else {
+      fetchPropiedades(filtros);
+    }
+  }, [location.state]);
 
   const handleFiltroChange = (e) => {
     const { name, value } = e.target;
@@ -136,19 +138,19 @@ const Alquiler = () => {
   };
 
   const aplicarFiltros = () => {
-    fetchPropiedades(filtros); 
+    fetchPropiedades(filtros);
     setMostrarFiltros(false);
   };
 
   const toggleFavorito = async (id, e) => {
     e.stopPropagation();
     const nuevasPropiedades = propiedades.map(prop =>
-      prop.idPropiedad === id ? { ...prop, favorito: !prop.favorito } : prop 
+      prop.idPropiedad === id ? { ...prop, favorito: !prop.favorito } : prop
     );
     setPropiedades(nuevasPropiedades);
     setPropiedadesFiltradas(prevFiltradas =>
       prevFiltradas.map(prop =>
-        prop.idPropiedad === id ? { ...prop, favorito: !prop.favorito } : prop 
+        prop.idPropiedad === id ? { ...prop, favorito: !prop.favorito } : prop
       )
     );
   };
@@ -164,7 +166,7 @@ const Alquiler = () => {
       iconSize: [30, 30],
       iconAnchor: [15, 30]
     });
-  
+
     const selectedIcon = L.divIcon({
       className: 'custom-marker selected',
       html: `<div class="marker-pin bg-red-500 text-white flex items-center justify-center rounded-full shadow-lg animate-pulse" style="width: 36px; height: 36px;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>`,
@@ -175,17 +177,17 @@ const Alquiler = () => {
     propertiesToDisplay.forEach(propiedad => {
       if (!propiedad.coordenadas || typeof propiedad.coordenadas.lat === 'undefined' || typeof propiedad.coordenadas.lng === 'undefined') {
         console.warn(`Propiedad con ID ${propiedad.idPropiedad} no tiene coordenadas válidas. Saltando marcador.`);
-        return; 
+        return;
       }
-      
+
       const isSelected = propiedadSeleccionada?.idPropiedad === propiedad.idPropiedad;
-      const icon = isSelected ? selectedIcon : defaultIcon; 
-      
+      const icon = isSelected ? selectedIcon : defaultIcon;
+
       const marker = L.marker([propiedad.coordenadas.lat, propiedad.coordenadas.lng], {
         icon: icon,
-        propiedadId: propiedad.idPropiedad 
+        propiedadId: propiedad.idPropiedad
       }).addTo(mapRef.current);
-      
+
       marker.on('click', () => {
         setPropiedadSeleccionada(propiedad);
       });
@@ -204,7 +206,7 @@ const Alquiler = () => {
     } else {
       mapRef.current.setView([-34.603, -58.381], 12);
     }
-  }, [propiedadSeleccionada]); 
+  }, [propiedadSeleccionada]);
 
   useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
@@ -213,16 +215,16 @@ const Alquiler = () => {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
       }).addTo(mapRef.current);
-      
-      updateMapMarkers(propiedadesFiltradas); 
+
+      updateMapMarkers(propiedadesFiltradas);
     }
     return () => {
       if (mapRef.current) {
-          mapRef.current.remove();
-          mapRef.current = null;
-        }
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
     };
-  }, [updateMapMarkers, propiedadesFiltradas]); 
+  }, [updateMapMarkers, propiedadesFiltradas]);
 
   useEffect(() => {
     updateMapMarkers(propiedadesFiltradas);
@@ -245,7 +247,7 @@ const Alquiler = () => {
         }
       });
     }
-  }, [propiedadSeleccionada]); 
+  }, [propiedadSeleccionada]);
 
   const barrios = [...new Set(propiedades.map(p => p.barrio))].sort();
   const tipos = [...new Set(propiedades.map(p => p.tipo))].sort();
@@ -336,19 +338,19 @@ const Alquiler = () => {
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg></div>
                   </div>
                 </div>
-                
+
                 {/* Botones */}
                 <div className="pt-4 space-y-3">
                   <button onClick={aplicarFiltros} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center">Aplicar filtros</button>
-                  <button 
+                  <button
                     onClick={() => {
                       const defaultFiltros = {
                         precioMin: '', precioMax: '', habitaciones: '', banos: '',
-                        tipo: '', barrio: '', transaccionTipo: 'Alquiler', 
+                        tipo: '', barrio: '', transaccionTipo: 'Alquiler',
                       };
                       setFiltros(defaultFiltros);
-                      fetchPropiedades({ transaccionTipo: 'Alquiler' }); 
-                    }} 
+                      fetchPropiedades({ transaccionTipo: 'Alquiler' });
+                    }}
                     className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center" // Estilo de Comprar.js
                   >
                     <RefreshCw size={18} className="mr-2" />Limpiar filtros
@@ -359,20 +361,20 @@ const Alquiler = () => {
           </div>
 
           <div className="w-full md:w-3/4 space-y-6">
-            
+
             <div className="bg-white p-4 rounded-xl shadow-md h-64 md:h-96 relative overflow-hidden">
               <h2 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
                 <MapPin size={18} className="mr-2 text-blue-600" />
                 Ubicación de propiedades
               </h2>
 
-              <div 
-                className="absolute inset-0 mt-16 rounded-lg overflow-hidden" 
+              <div
+                className="absolute inset-0 mt-16 rounded-lg overflow-hidden"
                 style={{ height: 'calc(100% - 4rem)' }}
               >
                 <div
                   ref={mapContainerRef}
-                  className="h-full w-full z-10" 
+                  className="h-full w-full z-10"
                 />
 
                 {propiedadSeleccionada && (
@@ -411,15 +413,15 @@ const Alquiler = () => {
                   <div className="text-blue-500 mx-auto w-16 h-16 mb-4 flex items-center justify-center bg-blue-50 rounded-full"><Search size={32} /></div>
                   <h3 className="text-lg font-medium text-gray-900">No se encontraron resultados</h3>
                   <p className="text-gray-600 mt-2">Intenta modificar los filtros de búsqueda</p>
-                  <button 
-                     onClick={() => {
+                  <button
+                    onClick={() => {
                       const defaultFiltros = {
                         precioMin: '', precioMax: '', habitaciones: '', banos: '',
                         tipo: '', barrio: '', transaccionTipo: 'Alquiler',
                       };
                       setFiltros(defaultFiltros);
                       fetchPropiedades({ transaccionTipo: 'Alquiler' });
-                    }} 
+                    }}
                     className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center mx-auto"
                   >
                     <RefreshCw size={16} className="mr-2" />Reiniciar búsqueda
@@ -436,13 +438,13 @@ const Alquiler = () => {
                     >
                       <div className="h-52 bg-gray-200 relative">
                         <div className="absolute top-0 left-0 right-0 bottom-0">
-                          <img 
+                          <img
                             src={
                               propiedad.imagenes && propiedad.imagenes.length > 0
                                 ? (propiedad.imagenes[0].rutaArchivo || propiedad.imagenes[0].url || propiedad.imagenes[0])
                                 : `https://picsum.photos/seed/${propiedad.idPropiedad}/400/300`
                             }
-                            alt={propiedad.titulo} 
+                            alt={propiedad.titulo}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               e.target.src = `https://picsum.photos/seed/${propiedad.idPropiedad}/400/300`;
@@ -464,7 +466,7 @@ const Alquiler = () => {
                         <p className="text-gray-600 mt-1 flex items-center">
                           <MapPin size={14} className="mr-1 text-blue-500" />
                           {propiedad.ubicacion} - {propiedad.barrio}
-                        </p> 
+                        </p>
                         <div className="flex gap-4 mt-4 text-sm">
                           <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1 rounded-lg"><BedDouble size={16} /><span>{propiedad.habitaciones}</span></div>
                           <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1 rounded-lg"><Bath size={16} /><span>{propiedad.banos}</span></div>
