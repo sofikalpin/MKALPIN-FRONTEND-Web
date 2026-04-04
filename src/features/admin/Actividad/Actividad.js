@@ -32,7 +32,7 @@ import {
   FaCalendarAlt as FaCalendar,
   FaClock,
 } from "react-icons/fa";
-import AdminLayout from "../adminLayout";
+import AdminLayout from "../AdminLayout";
 
 const Actividad = () => {
   const actividades = [

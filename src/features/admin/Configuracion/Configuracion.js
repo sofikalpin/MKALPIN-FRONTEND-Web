@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaCog, FaDatabase, FaSave } from "react-icons/fa";
-import AdminLayout from "../adminLayout";
+import AdminLayout from "../AdminLayout";
 import { API_BASE_URL } from "../../../config/apiConfig";
 
 const Configuracion = () => {

@@ -18,7 +18,7 @@ import AddPropertyForm from "./AddPropertyForm";
 import Filters from "./Filters";
 import ReservationCalendar from "./ReservationCalendar";
 import EditPropertyForm from "./EditPropertyForm";
-import AdminLayout from "../adminLayout";
+import AdminLayout from "../AdminLayout";
 
 import { propertyService } from "../../../services/api";
 

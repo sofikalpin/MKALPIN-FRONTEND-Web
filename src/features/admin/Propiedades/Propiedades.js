@@ -4,7 +4,7 @@ import OperationSelection from "./OperationSelection";
 import FilterControls from "./FilterControls";
 import PropertyList from "./PropertyList";
 import PropertyForm from "./PropertyForm";
-import AdminLayout from "../adminLayout";
+import AdminLayout from "../AdminLayout";
 import { useAdminData } from "../../../hooks/useAdminData";
 import { propertyService } from "../../../services/api";
 
