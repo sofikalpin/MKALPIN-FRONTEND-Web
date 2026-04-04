@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE_URL } from '../config/apiConfig';
+import { API_BASE_URL } from "../config/apiConfig";
 import axios from "axios";
 
 const UserContext = createContext();
@@ -15,11 +21,16 @@ export const UserProvider = ({ children }) => {
 
   const getUserRoleName = (idrol) => {
     switch (idrol) {
-      case 1: return 'Propietario';
-      case 2: return 'Inquilino';
-      case 3: return 'Administrador';
-      case 4: return 'Comprador';
-      default: return 'Usuario';
+      case 1:
+        return "Propietario";
+      case 2:
+        return "Inquilino";
+      case 3:
+        return "Administrador";
+      case 4:
+        return "Comprador";
+      default:
+        return "Usuario";
     }
   };
 
@@ -31,10 +42,13 @@ export const UserProvider = ({ children }) => {
 
       setIsLoggingIn(true);
 
-      const { data } = await axios.post(`${API_BASE_URL}/Usuario/IniciarSesion`, {
-        correo: email,
-        contrasenaHash: password,
-      });
+      const { data } = await axios.post(
+        `${API_BASE_URL}/Usuario/IniciarSesion`,
+        {
+          correo: email,
+          contrasenaHash: password,
+        },
+      );
 
       if (!data.status) {
         throw new Error("Inicio de sesión fallido");
@@ -44,9 +58,11 @@ export const UserProvider = ({ children }) => {
       sessionStorage.setItem("authToken", data.token);
       sessionStorage.setItem("userData", JSON.stringify(userData));
       setUser(userData);
-
     } catch (error) {
-      console.error("Error en login", error.response ? error.response.data : error);
+      console.error(
+        "Error en login",
+        error.response ? error.response.data : error,
+      );
       navigate("/iniciarsesion");
     }
   };
@@ -89,14 +105,14 @@ export const UserProvider = ({ children }) => {
 
   const logout = useCallback(() => {
     setUser(null);
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('userData');
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("userData");
     setTimeout(() => {
       navigate("/", { replace: true });
     }, 500);
   }, [navigate]);
 
-  const userRoleName = user?.idrol ? getUserRoleName(user.idrol) : '';
+  const userRoleName = user?.idrol ? getUserRoleName(user.idrol) : "";
 
   const value = {
     user,
@@ -108,9 +124,5 @@ export const UserProvider = ({ children }) => {
     getUserRoleName,
   };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

@@ -1,6 +1,41 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { FaHome, FaBuilding, FaUsers, FaCalendarAlt, FaChartBar, FaCog, FaSignOutAlt, FaPlus, FaSearch, FaTh, FaList, FaFilter, FaMapMarkerAlt, FaBed, FaBath, FaRulerCombined, FaTag, FaEdit, FaTrash, FaEye, FaCheck, FaMoneyBillWave, FaTimes, FaDownload, FaSave, FaUser, FaRuler, FaSun, FaCalendarAlt as FaCalendar } from "react-icons/fa";
-import { propertyService, clientService, contactService, tasacionService } from './api';
+import {
+  FaHome,
+  FaBuilding,
+  FaUsers,
+  FaCalendarAlt,
+  FaChartBar,
+  FaCog,
+  FaSignOutAlt,
+  FaPlus,
+  FaSearch,
+  FaTh,
+  FaList,
+  FaFilter,
+  FaMapMarkerAlt,
+  FaBed,
+  FaBath,
+  FaRulerCombined,
+  FaTag,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaCheck,
+  FaMoneyBillWave,
+  FaTimes,
+  FaDownload,
+  FaSave,
+  FaUser,
+  FaRuler,
+  FaSun,
+  FaCalendarAlt as FaCalendar,
+} from "react-icons/fa";
+import {
+  propertyService,
+  clientService,
+  contactService,
+  tasacionService,
+} from "./api";
 
 class UnifiedDataService {
   constructor() {
@@ -8,17 +43,18 @@ class UnifiedDataService {
       properties: null,
       clients: null,
       contacts: null,
-      lastUpdate: null
+      lastUpdate: null,
     };
     this.cacheTimeout = 5 * 60 * 1000; // 5 minutos
   }
 
   isCacheValid() {
-    return this.cache.lastUpdate && 
-           (Date.now() - this.cache.lastUpdate) < this.cacheTimeout;
+    return (
+      this.cache.lastUpdate &&
+      Date.now() - this.cache.lastUpdate < this.cacheTimeout
+    );
   }
 
-  
   async getAllProperties() {
     if (this.isCacheValid() && this.cache.properties) {
       return { status: true, value: this.cache.properties };
@@ -32,7 +68,7 @@ class UnifiedDataService {
       }
       return response;
     } catch (error) {
-      console.error('Error obteniendo propiedades:', error);
+      console.error("Error obteniendo propiedades:", error);
       throw error;
     }
   }
@@ -41,7 +77,7 @@ class UnifiedDataService {
     try {
       return await propertyService.search(filters);
     } catch (error) {
-      console.error('Error buscando propiedades:', error);
+      console.error("Error buscando propiedades:", error);
       throw error;
     }
   }
@@ -56,26 +92,25 @@ class UnifiedDataService {
   }
 
   async getPropertiesForSale() {
-    return this.searchProperties({ transaccionTipo: 'Venta' });
+    return this.searchProperties({ transaccionTipo: "Venta" });
   }
 
   async getPropertiesForRent() {
-    return this.searchProperties({ transaccionTipo: 'Alquiler' });
+    return this.searchProperties({ transaccionTipo: "Alquiler" });
   }
 
   async getPropertiesForTemporaryRent() {
-    return this.searchProperties({ 
-      transaccionTipo: 'Alquiler',
-      esAlquilerTemporario: true 
+    return this.searchProperties({
+      transaccionTipo: "Alquiler",
+      esAlquilerTemporario: true,
     });
   }
 
-  
   async getAllClients() {
     try {
       return await clientService.getAll();
     } catch (error) {
-      console.error('Error obteniendo clientes:', error);
+      console.error("Error obteniendo clientes:", error);
       throw error;
     }
   }
@@ -84,7 +119,7 @@ class UnifiedDataService {
     try {
       return await clientService.search(filters);
     } catch (error) {
-      console.error('Error buscando clientes:', error);
+      console.error("Error buscando clientes:", error);
       throw error;
     }
   }
@@ -95,17 +130,16 @@ class UnifiedDataService {
       this.cache.clients = null;
       return response;
     } catch (error) {
-      console.error('Error creando cliente:', error);
+      console.error("Error creando cliente:", error);
       throw error;
     }
   }
 
-  
   async createContact(contactData) {
     try {
       return await contactService.create(contactData);
     } catch (error) {
-      console.error('Error creando contacto:', error);
+      console.error("Error creando contacto:", error);
       throw error;
     }
   }
@@ -114,28 +148,26 @@ class UnifiedDataService {
     try {
       return await contactService.getAll();
     } catch (error) {
-      console.error('Error obteniendo contactos:', error);
+      console.error("Error obteniendo contactos:", error);
       throw error;
     }
   }
 
-  
   async createTasacion(tasacionData) {
     try {
       return await tasacionService.create(tasacionData);
     } catch (error) {
-      console.error('Error creando tasación:', error);
+      console.error("Error creando tasación:", error);
       throw error;
     }
   }
 
-  
   invalidateCache() {
     this.cache = {
       properties: null,
       clients: null,
       contacts: null,
-      lastUpdate: null
+      lastUpdate: null,
     };
   }
 
@@ -147,10 +179,15 @@ class UnifiedDataService {
     const properties = this.cache.properties;
     return {
       totalProperties: properties.length,
-      availableProperties: properties.filter(p => p.estado === 'Disponible').length,
-      propertiesForSale: properties.filter(p => p.transaccionTipo === 'Venta').length,
-      propertiesForRent: properties.filter(p => p.transaccionTipo === 'Alquiler').length,
-      temporaryRentProperties: properties.filter(p => p.esAlquilerTemporario).length
+      availableProperties: properties.filter((p) => p.estado === "Disponible")
+        .length,
+      propertiesForSale: properties.filter((p) => p.transaccionTipo === "Venta")
+        .length,
+      propertiesForRent: properties.filter(
+        (p) => p.transaccionTipo === "Alquiler",
+      ).length,
+      temporaryRentProperties: properties.filter((p) => p.esAlquilerTemporario)
+        .length,
     };
   }
 }
@@ -164,14 +201,17 @@ export const usePublicProperties = () => {
     getPropertyById: (id) => unifiedDataService.getPropertyById(id),
     getPropertiesForSale: () => unifiedDataService.getPropertiesForSale(),
     getPropertiesForRent: () => unifiedDataService.getPropertiesForRent(),
-    getPropertiesForTemporaryRent: () => unifiedDataService.getPropertiesForTemporaryRent()
+    getPropertiesForTemporaryRent: () =>
+      unifiedDataService.getPropertiesForTemporaryRent(),
   };
 };
 
 export const usePublicContacts = () => {
   return {
-    createContact: (contactData) => unifiedDataService.createContact(contactData),
-    createTasacion: (tasacionData) => unifiedDataService.createTasacion(tasacionData)
+    createContact: (contactData) =>
+      unifiedDataService.createContact(contactData),
+    createTasacion: (tasacionData) =>
+      unifiedDataService.createTasacion(tasacionData),
   };
 };
 

@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { useAdmin } from '../Context/AdminContext';
+import React, { useEffect } from "react";
+import { useAdmin } from "../Context/AdminContext";
 
-export const useAdminData = (dataType = 'all', autoFetch = true) => {
+export const useAdminData = (dataType = "all", autoFetch = true) => {
   const {
     properties,
     reservations,
     stats,
     loading,
     errors,
-    
+
     fetchProperties,
     fetchReservations,
     fetchStats,
@@ -18,41 +18,52 @@ export const useAdminData = (dataType = 'all', autoFetch = true) => {
   useEffect(() => {
     if (autoFetch) {
       switch (dataType) {
-        case 'properties':
+        case "properties":
           fetchProperties();
           break;
-        case 'reservations':
+        case "reservations":
           fetchReservations();
           break;
-        case 'stats':
+        case "stats":
           fetchStats();
           break;
-        case 'all':
+        case "all":
         default:
           loadAllData();
           break;
       }
     }
-  }, [dataType, autoFetch, fetchProperties, fetchReservations, fetchStats, loadAllData]);
+  }, [
+    dataType,
+    autoFetch,
+    fetchProperties,
+    fetchReservations,
+    fetchStats,
+    loadAllData,
+  ]);
 
   const getPropertiesByType = (type) => {
-    return properties.filter(p => p.operationType === type || p.tipo === type);
+    return properties.filter(
+      (p) => p.operationType === type || p.tipo === type,
+    );
   };
 
   const getReservationsByProperty = (propertyId) => {
-    return reservations.filter(r => r.propertyId === propertyId || r.propiedadId === propertyId);
+    return reservations.filter(
+      (r) => r.propertyId === propertyId || r.propiedadId === propertyId,
+    );
   };
 
   const isLoading = loading[dataType] || false;
   const error = errors[dataType] || null;
-  
+
   const hasData = () => {
     switch (dataType) {
-      case 'properties':
+      case "properties":
         return properties.length > 0;
-      case 'reservations':
+      case "reservations":
         return reservations.length > 0;
-      case 'all':
+      case "all":
       default:
         return properties.length > 0;
     }
@@ -72,19 +83,19 @@ export const useAdminData = (dataType = 'all', autoFetch = true) => {
       reservations: fetchReservations,
       stats: fetchStats,
       all: loadAllData,
-    }
+    },
   };
 };
 
 export const useProperties = () => {
-  const { 
-    properties, 
-    loading, 
+  const {
+    properties,
+    loading,
     errors,
     createProperty,
     updateProperty,
     deleteProperty,
-    fetchProperties 
+    fetchProperties,
   } = useAdmin();
 
   return {
@@ -95,11 +106,15 @@ export const useProperties = () => {
     updateProperty,
     deleteProperty,
     refreshProperties: fetchProperties,
-    
-    availableProperties: properties.filter(p => p.disponible || p.status === 'disponible'),
-    occupiedProperties: properties.filter(p => !p.disponible || p.status === 'ocupado'),
-    propertiesForSale: properties.filter(p => p.operationType === 'venta'),
-    propertiesForRent: properties.filter(p => p.operationType === 'alquiler'),
+
+    availableProperties: properties.filter(
+      (p) => p.disponible || p.status === "disponible",
+    ),
+    occupiedProperties: properties.filter(
+      (p) => !p.disponible || p.status === "ocupado",
+    ),
+    propertiesForSale: properties.filter((p) => p.operationType === "venta"),
+    propertiesForRent: properties.filter((p) => p.operationType === "alquiler"),
   };
 };
 
