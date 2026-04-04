@@ -10,6 +10,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'build', // To maintain compatibility with CRA's build output folder
+    chunkSizeWarningLimit: 1500, // Aumenta el límite a 1.5MB (silencia la advertencia)
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separa las librerías principales de React
+          react_core: ['react', 'react-dom', 'react-router-dom'],
+          // Separa librerías pesadas de interfaz
+          ui_frameworks: ['bootstrap', 'react-bootstrap', 'antd'],
+          // Separa iconos
+          icons: ['react-icons', 'lucide-react']
+        }
+      }
+    }
   },
   esbuild: {
     loader: "jsx",
